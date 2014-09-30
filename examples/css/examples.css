@@ -5,7 +5,7 @@
 
 html, body {
   background: #FFF;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Helvetica', sans-serif;
 }
 
 body {
@@ -17,9 +17,8 @@ body {
 }
 
 #lane .brick {
-  width: 300px;
+  width: 25%;
   padding: 10px;
-  background-color: #CCC;
 }
 
 #lane .brick > div {

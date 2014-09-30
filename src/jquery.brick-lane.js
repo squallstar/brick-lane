@@ -77,9 +77,9 @@
         }
 
         containerWidth = $el.width();
-
         console.log('containerWidth', containerWidth);
 
+        $el.css('overflow', 'hidden');
         if ($el.css('position') == 'static') {
           $el.css('position', 'relative');
         }
@@ -99,6 +99,7 @@
             } else {
               columnWidthComputed = settings.columnWidth;
             }
+            console.log('columnWidthComputed', columnWidthComputed);
             return columnWidthComputed;
           };
         }
@@ -124,7 +125,7 @@
 
       _layoutElement = function( $element, adjustContainerHeight ) {
         var width = $element.outerWidth(),
-            height = $element.outerHeight();
+            height = $element.outerHeight(true);
 
         console.log('---');
         console.log('element size', width, height);
@@ -145,16 +146,14 @@
 
         console.log('position to use:', position);
 
-        colYs[shortestColumnIdx] += height + 70;
+        colYs[shortestColumnIdx] += height;
 
         console.log('new columns heights', colYs);
 
         $element.css({
           position: 'absolute',
           left: position.x,
-          top: position.y,
-          width: width,
-          height: height
+          top: position.y
         });
 
         if (adjustContainerHeight !== false) {
@@ -169,7 +168,7 @@
 
       _bindViewportSize = function() {
         var w = columnWidth();
-        columnsCount = Math.round(containerWidth / w);
+        columnsCount = Math.floor(containerWidth / w);
         console.log('columns count', columnsCount);
 
         for (var i = 0; i < columnsCount; i++) {
