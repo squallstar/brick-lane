@@ -11,6 +11,8 @@
 
   $.fn.brickLane = function( options ) {
 
+    // ----------------------- instance generator -----------------------
+
     if ( typeof options === 'string' ) {
       var args = slice.call( arguments, 1 );
 
@@ -37,26 +39,91 @@
       return this;
     }
 
+    // ---------------------------- helpers ----------------------------
+
+    var isNumeric = function( obj ) {
+        return !jQuery.isArray( obj ) && (obj - parseFloat( obj ) + 1) >= 0;
+    };
+
+    // ---------------------- settings definition ----------------------
+
     var settings = $.extend({
+
+      /* The width of a single column.
+         A function can also be passed instead of a number
+       */
       columnWidth: 200,
+
+      /* The jQuery selector to specify the children elements */
       itemSelector: undefined
+
     }, options);
 
-    var BrickLane = function(element, settings ) {
-      var $el = $(element),
-          $elements = undefined
+    // ---------------------------- plugin -----------------------------
 
-      var _init = function() {
-        $elements = settings.itemSelector ? $el.find(settings.itemSelector) : $el.children();
+    var BrickLane = function( element, settings ) {
+      var $el = $(element),
+      $elements = undefined,
+      columnWidth = undefined,
+      containerWidth = undefined,
+      initialized = false,
+
+      _init = function() {
+        if (initialized) {
+          _cleanup();
+        }
+
+        containerWidth = $el.width();
+
+        $elements = settings.itemSelector ? $el.find( settings.itemSelector ) : $el.children();
+
+        if ( typeof settings.columnWidth === 'function' ) {
+          columnWidth = settings.columnWidth;
+        } else {
+          columnWidth = function() {
+            return settings.columnWidth;
+          };
+        }
+
+        initialized = true;
+
+        $elements.each(function() {
+          _appendedElement( $(this) );
+        });
+      },
+
+      _cleanup = function() {
+        // todo
+      },
+
+      _addElement = function( $element ) {
+        $el.append( $element );
+      }
+
+      _appendedElement = function( $element ) {
+        console.debug('appended', $element);
+
+        var width = $element.outerWidth(),
+            height = $element.outerHeight();
+
+        $element.css({
+          position: 'absolute'
+        });
       };
 
       return {
         initialize: function() {
           _init();
           console.debug('initial elements', $elements);
+        },
+
+        setOptions: function( options ) {
+          settings = options;
         }
       }
     };
+
+    // ----------------------- jquery plugin init ----------------------
 
     return this.each(function() {
       var instance = $.data( this, namespace );
