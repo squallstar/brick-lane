@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: #FFF;
+  font-family: 'Open Sans', sans-serif;
+}
+
+#lane {
+  padding: 30px;
+}
+
+#lane .brick {
+  width: 300px;
+  padding: 20px;
+}
+
+#lane .brick > div {
+  background-color: #EEE;
+  padding: 20px;
+}
