@@ -14,13 +14,13 @@
     // ----------------------- instance generator -----------------------
 
     if ( typeof options === 'string' ) {
-      var args = slice.call( arguments, 1 );
+      var args = arguments.slice( 1 );
 
       for ( var i=0, len = this.length; i < len; i++ ) {
         var elem = this[i];
         var instance = $.data( elem, namespace );
         if ( !instance ) {
-          logError( "Cannot call " + namespace + " prior to BrickLane initialization; " +
+          logError( "Cannot call " + namespace + " prior to Brick Lane initialization; " +
             "options: '" + options + "'" );
           continue;
         }
@@ -38,12 +38,6 @@
 
       return this;
     }
-
-    // ---------------------------- helpers ----------------------------
-
-    var isNumeric = function( obj ) {
-        return !jQuery.isArray( obj ) && (obj - parseFloat( obj ) + 1) >= 0;
-    };
 
     // ---------------------- settings definition ----------------------
 
