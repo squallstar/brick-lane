@@ -8,16 +8,22 @@ html, body {
   font-family: 'Open Sans', sans-serif;
 }
 
+body {
+  padding: 40px;
+}
+
 #lane {
-  padding: 30px;
+  width: 100%;
 }
 
 #lane .brick {
   width: 300px;
-  padding: 20px;
+  padding: 10px;
+  background-color: #CCC;
 }
 
 #lane .brick > div {
   background-color: #EEE;
-  padding: 20px;
+  padding: 15px 20px;
+  font-size: 12px;
 }

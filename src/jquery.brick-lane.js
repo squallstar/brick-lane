@@ -52,7 +52,7 @@
       /* The width of a single column.
          A function can also be passed instead of a number
        */
-      columnWidth: 200,
+      columnWidth: 'auto',
 
       /* The jQuery selector to specify the children elements */
       itemSelector: undefined
@@ -65,6 +65,9 @@
       var $el = $(element),
       $elements = undefined,
       columnWidth = undefined,
+      columnWidthComputed = 0,
+      columnsCount = 1,
+      colYs = [],
       containerWidth = undefined,
       initialized = false,
 
@@ -75,50 +78,118 @@
 
         containerWidth = $el.width();
 
+        console.log('containerWidth', containerWidth);
+
+        if ($el.css('position') == 'static') {
+          $el.css('position', 'relative');
+        }
+
         $elements = settings.itemSelector ? $el.find( settings.itemSelector ) : $el.children();
 
         if ( typeof settings.columnWidth === 'function' ) {
           columnWidth = settings.columnWidth;
         } else {
           columnWidth = function() {
-            return settings.columnWidth;
+            if (settings.columnWidth == 'auto') {
+              if ($elements.size() > 0) {
+                columnWidthComputed = $elements.first().outerWidth();
+              } else {
+                columnWidthComputed = 300;
+              }
+            } else {
+              columnWidthComputed = settings.columnWidth;
+            }
+            return columnWidthComputed;
           };
         }
+
+        _bindViewportSize();
 
         initialized = true;
 
         $elements.each(function() {
-          _appendedElement( $(this) );
+          _layoutElement( $(this), false );
         });
+
+        _adjustViewportHeight();
       },
 
       _cleanup = function() {
-        // todo
+        colYs = [];
       },
 
       _addElement = function( $element ) {
         $el.append( $element );
       }
 
-      _appendedElement = function( $element ) {
-        console.debug('appended', $element);
-
+      _layoutElement = function( $element, adjustContainerHeight ) {
         var width = $element.outerWidth(),
             height = $element.outerHeight();
 
+        console.log('---');
+        console.log('element size', width, height);
+
+        var colSpan = 1;
+        var minimumY = Math.min.apply( Math, colYs );
+
+        console.log('min y', minimumY, 'from', colYs);
+
+        var shortestColumnIdx = colYs.indexOf( minimumY );
+
+        console.log('shortest column index:', shortestColumnIdx);
+
+        var position = {
+          x: columnWidthComputed * shortestColumnIdx,
+          y: minimumY
+        };
+
+        console.log('position to use:', position);
+
+        colYs[shortestColumnIdx] += height + 70;
+
+        console.log('new columns heights', colYs);
+
         $element.css({
-          position: 'absolute'
+          position: 'absolute',
+          left: position.x,
+          top: position.y,
+          width: width,
+          height: height
         });
+
+        if (adjustContainerHeight !== false) {
+          _adjustViewportHeight();
+        }
+      },
+
+      _adjustViewportHeight = function() {
+        var maxY = Math.max.apply( Math, colYs );
+        $el.css('height', maxY);
+      }
+
+      _bindViewportSize = function() {
+        var w = columnWidth();
+        columnsCount = Math.round(containerWidth / w);
+        console.log('columns count', columnsCount);
+
+        for (var i = 0; i < columnsCount; i++) {
+          if (!colYs[i]) {
+            colYs.push(0);
+          }
+        };
       };
 
       return {
         initialize: function() {
           _init();
-          console.debug('initial elements', $elements);
         },
 
         setOptions: function( options ) {
           settings = options;
+        },
+
+        appended: function ( $element ) {
+          _appendedElement( $element );
         }
       }
     };
@@ -132,7 +203,6 @@
         console.debug('calling instance');
         instance.setOptions( settings );
       } else {
-        console.debug('creating new instance', this, settings);
         instance = new BrickLane(this, settings);
         $.data( this, namespace, instance );
       }
