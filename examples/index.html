@@ -327,13 +327,6 @@
 
   <script type="text/javascript">
     $(document).ready(function() {
-      var i = 0;
-      $('.brick').each(function() {
-        console.log($(this));
-        $(this).find('div').css('background-image', 'url(http://lorempixel.com/400/400/?v=' + i + ')');
-        i++;
-      });
-
       $('#lane').brickLane();
     });
   </script>
