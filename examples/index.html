@@ -328,20 +328,24 @@
 
   <script type="text/javascript">
     $(document).ready(function() {
+
+      // Here we start the plugin
       $('#lane').brickLane();
 
-      var isAdding = false;
-      $(window).scroll(function() {
-        if ( !isAdding && document.documentElement.clientHeight +
-             $(document).scrollTop() >= document.body.offsetHeight - 200 ) {
-          isAdding = true;
+      var colors = ['#E28349', '#D78D4B', '#9D4F29', '#DA764C', '#B6654A'];
 
-          var bricks = $('.brick:lt(5)').clone();
+      // Infinite scrolling implementation
+      $(window).scroll(function() {
+        if ( document.documentElement.clientHeight +
+             $(document).scrollTop() >= document.body.offsetHeight - 50 ) {
+
+          var bricks = $('.brick:lt(20)').clone();
+
           bricks.each(function() {
+            var randColor = colors[Math.floor(Math.random() * colors.length)];
+            $(this).find('div').css('background-color', randColor);
             $('#lane').brickLane( 'append', $(this) );
           });
-
-          isAdding = false;
         }
       });
     });

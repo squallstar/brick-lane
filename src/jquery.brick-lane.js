@@ -1,5 +1,5 @@
 /*!
- * Brick Lane v0.0.1
+ * Brick Lane v0.0.2
  * Hipstery Cascading Grid Layout Library
  * MIT License
  * by Nicholas Valbusa
@@ -45,18 +45,33 @@
     var settings = $.extend({
 
       /* The width of a single column.
+         By default, 'auto' will use the first element to calculate the
+         width of the columns.
          A function can also be passed instead of a number
+
+         Values: auto|number|function
        */
       columnWidth: 'auto',
 
-      /* The jQuery selector to specify the children elements */
+      /* The jQuery selector to specify the children elements
+         By default, nearest .children() will be used when undefined
+         is given.
+       */
       itemSelector: undefined,
 
       /* Binds layout to window resizing */
       isResizeBound: true,
 
       /* Lay out elements when resize is finished by X ms */
-      resizeDelay: 200
+      resizeDelay: 200,
+
+      /* Duration of the transition when items gets added to the layout
+         You can use 0 to disable it.
+       */
+      transitionDuration: 250,
+
+      /* Uses CSS3 transitions when possible */
+      useCSS3Transitions: true
 
     }, options);
 
@@ -138,8 +153,7 @@
           var w = $el.width();
           if (w !== containerWidth) {
             containerWidth = w;
-            _setViewportSize();
-            _layoutElements();
+            _relayoutElements();
           }
         }, delay);
       },
@@ -157,12 +171,31 @@
           $element = $($element);
         }
 
-        $element.css('opacity', 0);
+        if ( settings.transitionDuration > 0) {
+          $element.css('opacity', 0);
+        }
 
         _layoutElement( $element, true );
         _adjustViewportHeight();
 
-        $element.animate( {opacity: 1}, 200 );
+        if ( settings.transitionDuration > 0) {
+          if ( settings.useCSS3Transitions) {
+            $element.css( {opacity: 1} );
+          } else {
+            $element.animate( {opacity: 1}, settings.transitionDuration );
+          }
+        }
+      },
+
+      _appendedElement = function( $element ) {
+        if ( ! ($element instanceof jQuery) ) {
+          $element = $($element);
+        }
+
+        $elements.add($element);
+
+        _layoutElement( $element );
+        _adjustViewportHeight();
       },
 
       _layoutElements = function() {
@@ -171,7 +204,7 @@
         });
 
         _adjustViewportHeight( true );
-      }
+      },
 
       _layoutElement = function( $element, append ) {
         var colSpan = 1,
@@ -200,6 +233,11 @@
         colYs[shortestColumnIdx] += $element.outerHeight(true);
       },
 
+      _relayoutElements = function() {
+        _setViewportSize();
+        _layoutElements();
+      },
+
       _adjustViewportHeight = function( reduceAllowed ) {
         var maxY = Math.max.apply( Math, colYs ),
             containerHeight = $el.outerHeight(true);
@@ -220,6 +258,8 @@
         };
       };
 
+      // ------------------------ public methods ------------------------
+
       return {
         initialize: function() {
           _init();
@@ -235,6 +275,10 @@
 
         append: function ( $element ) {
           _addElement( $element );
+        },
+
+        layout: function() {
+          _relayoutElements();
         },
 
         destroy: function (){
