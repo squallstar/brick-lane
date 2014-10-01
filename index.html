@@ -38,19 +38,123 @@
 
 <p>Brick Lane is a jQuery plugin to place elements in optimal position based on available vertical space, like fitting bricks in a wall.</p>
 
-<p>The project is trying to create a lightweight, scalable version of the famous Masonry plugin.</p>
+<p>The project is trying to create a lightweight, scalable version of the famous <strong>Masonry</strong> plugin.</p>
 
-<h2>
+<hr><h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>First, include the <strong>Brick Lane</strong> plugin right after <strong>jQuery</strong> to get started.</p>
 
 <ul>
-<li><a href="src/jquery.brick-lane.min.js">jquery.brick-lane.min.js</a></li>
+<li><a href="https://github.com/squallstar/brick-lane/blob/master/src/jquery.brick-lane.min.js">jquery.brick-lane.min.js</a></li>
 </ul><p>Then, simply as</p>
 
-<pre><code>$('.mycontainer').brickLane();
-</code></pre>
+<div class="highlight highlight-javascript"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">();</span>
+</pre></div>
+
+<p>Where you container has a structure similar to:</p>
+
+<div class="highlight highlight-html"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"mycontainer"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"item"</span><span class="nt">&gt;</span>1<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"item"</span><span class="nt">&gt;</span>2<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"item"</span><span class="nt">&gt;</span>3<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"some-other-item"</span><span class="nt">&gt;</span>4<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+<hr><h2>
+<a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Options</h2>
+
+<h3>
+<a name="columnwidth" class="anchor" href="#columnwidth"><span class="octicon octicon-link"></span></a><code>columnWidth</code>
+</h3>
+
+<p>By default, <strong>Brick Lane</strong> will use the width of your first element as <strong>column size</strong>.</p>
+
+<p>If you wish to adjust the column size, you can pass the <code>columnWidth</code> option to the plugin as a <code>number</code> or a <code>function</code> that should return a number:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="c1">// As a number</span>
+<span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">({</span>
+    <span class="nx">columnWidth</span><span class="o">:</span> <span class="mi">350</span>
+<span class="p">});</span>
+
+<span class="c1">// Or as a function</span>
+<span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">({</span>
+    <span class="nx">columnWidth</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="mi">350</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+<hr><h3>
+<a name="itemselector" class="anchor" href="#itemselector"><span class="octicon octicon-link"></span></a><code>itemSelector</code>
+</h3>
+
+<p>By default, <strong>Brick Lane</strong> will use the <code>first level children</code> as initial items to be added to the instance. You can amend the behaviour by passing a <strong>jQuery selector</strong> as <code>itemSelector</code> option:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">({</span>
+    <span class="nx">itemSelector</span><span class="o">:</span> <span class="s1">'article'</span>
+<span class="p">});</span>
+</pre></div>
+
+<hr><h3>
+<a name="isresizebound" class="anchor" href="#isresizebound"><span class="octicon octicon-link"></span></a><code>isResizeBound</code>
+</h3>
+
+<p>Binds layout to window resizing (defaults to true)</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">({</span>
+    <span class="nx">isResizeBound</span><span class="o">:</span> <span class="kc">false</span>
+<span class="p">});</span>
+</pre></div>
+
+<hr><h2>
+<a name="methods" class="anchor" href="#methods"><span class="octicon octicon-link"></span></a>Methods</h2>
+
+<p>You can access the instance anytime by calling it like:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">();</span>
+</pre></div>
+
+<p>Methods can be called by passing the method name as first argument, following parameters after that. Please check the methods here below.</p>
+
+<h3>
+<a name="append-element" class="anchor" href="#append-element"><span class="octicon octicon-link"></span></a>append (element)</h3>
+
+<p>Appends and lay outs the given element to the instance.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">newEl</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'.some-article'</span><span class="p">);</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">(</span><span class="s1">'append'</span><span class="p">,</span> <span class="nx">newEl</span><span class="p">);</span>
+</pre></div>
+
+<hr><h3>
+<a name="appended-element" class="anchor" href="#appended-element"><span class="octicon octicon-link"></span></a>appended (element)</h3>
+
+<p>If you have your own way (perhaps a framework) to add elements to the DOM, you can just tell the plugin to lay out the item by using the <code>appended</code> method instead.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">newEl</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'.some-article'</span><span class="p">);</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">newEl</span><span class="p">);</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">(</span><span class="s1">'appended'</span><span class="p">,</span> <span class="nx">newEl</span><span class="p">);</span>
+</pre></div>
+
+<hr><h3>
+<a name="layout" class="anchor" href="#layout"><span class="octicon octicon-link"></span></a>layout</h3>
+
+<p>Force the layout of all elements.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">(</span><span class="s1">'layout'</span><span class="p">);</span>
+</pre></div>
+
+<hr><h3>
+<a name="destroy" class="anchor" href="#destroy"><span class="octicon octicon-link"></span></a>destroy</h3>
+
+<p>Destroys the instance and reposition all items like they were before.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">'.mycontainer'</span><span class="p">).</span><span class="nx">brickLane</span><span class="p">(</span><span class="s1">'destroy'</span><span class="p">);</span>
+</pre></div>
         </section>
 
         <footer>
