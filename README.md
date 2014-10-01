@@ -16,16 +16,26 @@ First, include the **Brick Lane** plugin right after **jQuery** to get started.
 
 Then, simply as
 
-    $('.mycontainer').brickLane();
+```javascript
+$('.mycontainer').brickLane();
+```
    
 Where you container has a structure similar to:
 
-    <div class="mycontainer">
-    	<div class="item">1</div>
-    	<div class="item">2</div>
-    	<div class="item">3</div>
-    	<div class="some-other-item">4</div>
-    </div>
+```html
+<div class="mycontainer">
+	<div class="item">1</div>
+	<div class="item">2</div>
+	<div class="item">3</div>
+	<div class="some-other-item">4</div>
+</div>
+```
+
+---
+
+## Options
+
+### ``columnWidth``
 
 By default, **Brick Lane** will use the width of your first element as **column size**.
 
@@ -37,10 +47,36 @@ $('.mycontainer').brickLane({
     columnWidth: 350
 });
 
-Or as a function
+// Or as a function
 $('.mycontainer').brickLane({
     columnWidth: function(){
     	return 350;
     }
 });
+```
+
+---
+
+## Methods
+
+### ``append``
+
+Appends and lay outs the given element to the instance.
+
+```javascript
+var newEl = $('.some-article');
+
+$('.mycontainer').brickLane('append', newEl);
+```
+
+### ``appended``
+
+If you have your own way to add elements to the DOM, you can just tell the plugin to lay out the item by using the ``appended`` method instead.
+
+```javascript
+var newEl = $('.some-article');
+
+$('.mycontainer').append(newEl);
+
+$('.mycontainer').brickLane('appended', newEl);
 ```
