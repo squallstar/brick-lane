@@ -1,5 +1,5 @@
 /*!
- * Brick Lane v0.0.2
+ * Brick Lane v0.0.3
  * Hipstery Cascading Grid Layout Library
  * MIT License
  * by Nicholas Valbusa
@@ -93,13 +93,16 @@
           _cleanup();
         }
 
+        // Sets the container position to allow absolute positioning of elements inside
         $el.css('overflow', 'hidden');
         if ($el.css('position') == 'static') {
           $el.css('position', 'relative');
         }
 
+        // Gets the initial group of elements in the container
         $elements = settings.itemSelector ? $el.find( settings.itemSelector ) : $el.children();
 
+        // Sets up the columnWidth to always be a function
         if ( typeof settings.columnWidth === 'function' ) {
           columnWidth = settings.columnWidth;
         } else {
@@ -118,8 +121,10 @@
           };
         }
 
+        // Manually fires the resize event to layout elements
         _onViewportResize();
 
+        // Binds the autolayout on resize, if needed
         if (settings.isResizeBound) {
           _bindResize();
         }
@@ -128,6 +133,7 @@
       },
 
       _cleanup = function() {
+        // Cleans up the instance
         colYs = [];
       },
 
@@ -144,11 +150,14 @@
       _onViewportResize = function(event) {
         var delay = event === undefined ? 0 : settings.resizeDelay;
 
+        // Clears the current resize timeout. Check few lines below
         if (resizeTimeout) {
           window.clearTimeout(resizeTimeout);
           delete resizeTimeout;
         }
 
+        // Binds the re-layout of elements after some delay to make sure
+        // this will only be called once the user ended to resize the window.
         resizeTimeout = window.setTimeout(function() {
           var w = $el.width();
           if (w !== containerWidth) {
@@ -167,35 +176,39 @@
       },
 
       _addElement = function( $element ) {
+        _appendedElement( $element, true );
+      },
+
+      _appendedElement = function( $element, needsToBeAppended ) {
+        needsToBeAppended = needsToBeAppended === true;
+
+        // Make sure the given element is a jQuery element
         if ( ! ($element instanceof jQuery) ) {
           $element = $($element);
         }
 
-        if ( settings.transitionDuration > 0) {
-          $element.css('opacity', 0);
+        // Add the element to our set
+        $elements.add($element);
+
+        // If needs to be appended, set-up the element before appending it to the DOM
+        if ( needsToBeAppended ) {
+          if ( settings.transitionDuration > 0) {
+            $element.css('opacity', 0);
+          }
         }
 
-        _layoutElement( $element, true );
+        // Lay outs the element
+        _layoutElement( $element, needsToBeAppended );
         _adjustViewportHeight();
 
-        if ( settings.transitionDuration > 0) {
+        // Appear transition (when needed)
+        if ( needsToBeAppended && settings.transitionDuration > 0 ) {
           if ( settings.useCSS3Transitions) {
             $element.css( {opacity: 1} );
           } else {
             $element.animate( {opacity: 1}, settings.transitionDuration );
           }
         }
-      },
-
-      _appendedElement = function( $element ) {
-        if ( ! ($element instanceof jQuery) ) {
-          $element = $($element);
-        }
-
-        $elements.add($element);
-
-        _layoutElement( $element );
-        _adjustViewportHeight();
       },
 
       _layoutElements = function() {
@@ -208,28 +221,33 @@
 
       _layoutElement = function( $element, append ) {
         var colSpan = 1,
-            minimumY = Math.min.apply( Math, colYs ),
-            shortestColumnIdx = colYs.indexOf( minimumY ),
-            position = {
-              x: columnWidthComputed * shortestColumnIdx,
-              y: minimumY
-            };
 
+        // Get the shortest column
+        minimumY = Math.min.apply( Math, colYs ),
+
+        // And its index
+        shortestColumnIdx = colYs.indexOf( minimumY ),
+
+        // Then just do some simply math to adjust the element position
         data = {
-          left : position.x,
-          top: position.y
+          left: columnWidthComputed * shortestColumnIdx,
+          top: minimumY
         };
 
+        // Don't apply absolute positioning more than once - for performances
         if ($element.css('position') !== 'absolute') {
           data.position = 'absolute';
         }
 
+        // Sets the new css styles to the element
         $element.css(data);
 
+        // Check if the element needs to be appended
         if (append === true) {
           $el.append($element);
         }
 
+        // Update the column height with the element we just added to it
         colYs[shortestColumnIdx] += $element.outerHeight(true);
       },
 
@@ -242,17 +260,21 @@
         var maxY = Math.max.apply( Math, colYs ),
             containerHeight = $el.outerHeight(true);
 
+        // Adjust the container height when needed
         if ( reduceAllowed === true || maxY > containerHeight ) {
           $el.css('height', maxY);
         }
       }
 
       _setViewportSize = function() {
+        // Get the width of a single column
         var w = columnWidth();
+
+        // Get the number of columns that can fit into the container
         columnsCount = Math.floor(containerWidth / w + 0.01);
 
+        // Recreate all columns references
         colYs = [];
-
         for (var i = 0; i < columnsCount; i++) {
           colYs.push(0);
         };

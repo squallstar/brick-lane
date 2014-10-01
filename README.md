@@ -10,7 +10,7 @@ The project is trying to create a lightweight, scalable version of the famous Ma
 
 First, include the **Brick Lane** plugin right after **jQuery** to get started.
 
-+ [jquery.brick-lane.min.js](src/jquery.brick-lane.min.js)
++ [jquery.brick-lane.min.js](https://github.com/squallstar/brick-lane/blob/master/src/jquery.brick-lane.min.js)
 
 Then, simply as
 
