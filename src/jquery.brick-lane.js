@@ -14,7 +14,8 @@
     // ----------------------- instance generator -----------------------
 
     if ( typeof options === 'string' ) {
-      var args = arguments.slice( 1 );
+      var args = $.extend([], arguments);
+      args.shift();
 
       for ( var i=0, len = this.length; i < len; i++ ) {
         var elem = this[i];
@@ -55,7 +56,7 @@
       isResizeBound: true,
 
       /* Lay out elements when resize is finished by X ms */
-      resizeDelay: 100
+      resizeDelay: 200
 
     }, options);
 
@@ -152,8 +153,12 @@
       },
 
       _addElement = function( $element ) {
-        $el.append( $element );
-        _layoutElement( $element );
+        $element.css('opacity', 0);
+
+        _layoutElement( $element, true );
+        _adjustViewportHeight();
+
+        $element.animate( {opacity: 1}, 200 );
       },
 
       _layoutElements = function() {
@@ -161,24 +166,17 @@
           _layoutElement( $(this) );
         });
 
-        _adjustViewportHeight();
+        _adjustViewportHeight( true );
       }
 
-      _layoutElement = function( $element ) {
-        var width = $element.outerWidth(),
-            height = $element.outerHeight(true);
-
-        var colSpan = 1;
-        var minimumY = Math.min.apply( Math, colYs );
-
-        var shortestColumnIdx = colYs.indexOf( minimumY );
-
-        var position = {
-          x: columnWidthComputed * shortestColumnIdx,
-          y: minimumY
-        };
-
-        colYs[shortestColumnIdx] += height;
+      _layoutElement = function( $element, append ) {
+        var colSpan = 1,
+            minimumY = Math.min.apply( Math, colYs ),
+            shortestColumnIdx = colYs.indexOf( minimumY ),
+            position = {
+              x: columnWidthComputed * shortestColumnIdx,
+              y: minimumY
+            };
 
         data = {
           left : position.x,
@@ -190,11 +188,21 @@
         }
 
         $element.css(data);
+
+        if (append === true) {
+          $el.append($element);
+        }
+
+        colYs[shortestColumnIdx] += $element.outerHeight(true);
       },
 
-      _adjustViewportHeight = function() {
-        var maxY = Math.max.apply( Math, colYs );
-        $el.css('height', maxY);
+      _adjustViewportHeight = function( reduceAllowed ) {
+        var maxY = Math.max.apply( Math, colYs ),
+            containerHeight = $el.outerHeight(true);
+
+        if ( reduceAllowed === true || maxY > containerHeight ) {
+          $el.css('height', maxY);
+        }
       }
 
       _setViewportSize = function() {
@@ -237,7 +245,6 @@
       var instance = $.data( this, namespace );
 
       if (instance) {
-        console.debug('calling instance');
         instance.setOptions( settings );
       } else {
         instance = new BrickLane(this, settings);

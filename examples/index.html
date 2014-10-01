@@ -329,6 +329,21 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $('#lane').brickLane();
+
+      var isAdding = false;
+      $(window).scroll(function() {
+        if ( !isAdding && document.documentElement.clientHeight +
+             $(document).scrollTop() >= document.body.offsetHeight - 200 ) {
+          isAdding = true;
+
+          var bricks = $('.brick:lt(5)').clone();
+          bricks.each(function() {
+            $('#lane').brickLane( 'append', $(this) );
+          });
+
+          isAdding = false;
+        }
+      });
     });
   </script>
 
