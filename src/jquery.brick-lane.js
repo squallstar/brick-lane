@@ -63,7 +63,7 @@
       isResizeBound: true,
 
       /* Lay out elements when resize is finished by X ms */
-      resizeDelay: 200,
+      resizeDelay: 150,
 
       /* Duration of the transition when items gets added to the layout
          You can use 0 to disable it.
@@ -79,7 +79,7 @@
 
     var BrickLane = function( element, settings ) {
       var $el = $(element),
-      $elements = undefined,
+      elements = [],
       columnWidth = undefined,
       columnWidthComputed = 0,
       columnsCount = 1,
@@ -100,7 +100,10 @@
         }
 
         // Gets the initial group of elements in the container
-        $elements = settings.itemSelector ? $el.find( settings.itemSelector ) : $el.children();
+        var $elements = settings.itemSelector ? $el.find( settings.itemSelector ) : $el.children();
+        $elements.each(function() {
+          elements.push( $(this) );
+        });
 
         // Sets up the columnWidth to always be a function
         if ( typeof settings.columnWidth === 'function' ) {
@@ -108,8 +111,8 @@
         } else {
           columnWidth = function() {
             if (settings.columnWidth == 'auto') {
-              if ($elements.size() > 0) {
-                columnWidthComputed = $elements.first().outerWidth();
+              if (elements.length > 0) {
+                columnWidthComputed = elements[0].outerWidth();
               } else {
                 columnWidthComputed = 300;
               }
@@ -135,6 +138,7 @@
       _cleanup = function() {
         // Cleans up the instance
         colYs = [];
+        elements = [];
       },
 
       _destroy = function() {
@@ -142,8 +146,8 @@
 
         $el.removeAttr('style');
 
-        $elements.each(function() {
-          $(this).removeAttr('style');
+        $.each(elements, function() {
+          this.removeAttr('style');
         });
       },
 
@@ -188,7 +192,7 @@
         }
 
         // Add the element to our set
-        $elements.add($element);
+        elements.push( $element );
 
         // If needs to be appended, set-up the element before appending it to the DOM
         if ( needsToBeAppended ) {
@@ -212,8 +216,8 @@
       },
 
       _layoutElements = function() {
-        $elements.each(function() {
-          _layoutElement( $(this) );
+        $.each(elements, function() {
+          _layoutElement( this );
         });
 
         _adjustViewportHeight( true );
