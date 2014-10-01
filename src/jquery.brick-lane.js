@@ -52,7 +52,10 @@
       itemSelector: undefined,
 
       /* Binds layout to window resizing */
-      isResizeBound: true
+      isResizeBound: true,
+
+      /* Lay out elements when resize is finished by X ms */
+      resizeDelay: 100
 
     }, options);
 
@@ -99,7 +102,7 @@
           };
         }
 
-        _onViewportResize(0);
+        _onViewportResize();
 
         if (settings.isResizeBound) {
           _bindResize();
@@ -122,13 +125,15 @@
         });
       },
 
-      _onViewportResize = function(delay) {
+      _onViewportResize = function(event) {
+        var delay = event === undefined ? 0 : settings.resizeDelay;
+
         if (resizeTimeout) {
           window.clearTimeout(resizeTimeout);
           delete resizeTimeout;
         }
 
-        window.setTimeout(function() {
+        resizeTimeout = window.setTimeout(function() {
           var w = $el.width();
           console.log(w, containerWidth);
           if (w !== containerWidth) {
@@ -136,7 +141,7 @@
             _setViewportSize();
             _layoutElements();
           }
-        }, delay ? delay : 50);
+        }, delay);
       },
 
       _bindResize = function() {
