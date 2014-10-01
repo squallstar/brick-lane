@@ -153,6 +153,10 @@
       },
 
       _addElement = function( $element ) {
+        if ( ! ($element instanceof jQuery) ) {
+          $element = $($element);
+        }
+
         $element.css('opacity', 0);
 
         _layoutElement( $element, true );
