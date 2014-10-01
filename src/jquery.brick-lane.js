@@ -97,7 +97,7 @@
             } else {
               columnWidthComputed = settings.columnWidth;
             }
-            console.log('columnWidthComputed', columnWidthComputed);
+
             return columnWidthComputed;
           };
         }
@@ -135,7 +135,6 @@
 
         resizeTimeout = window.setTimeout(function() {
           var w = $el.width();
-          console.log(w, containerWidth);
           if (w !== containerWidth) {
             containerWidth = w;
             _setViewportSize();
@@ -169,28 +168,17 @@
         var width = $element.outerWidth(),
             height = $element.outerHeight(true);
 
-        console.log('---');
-        console.log('element size', width, height);
-
         var colSpan = 1;
         var minimumY = Math.min.apply( Math, colYs );
 
-        console.log('min y', minimumY, 'from', colYs);
-
         var shortestColumnIdx = colYs.indexOf( minimumY );
-
-        console.log('shortest column index:', shortestColumnIdx);
 
         var position = {
           x: columnWidthComputed * shortestColumnIdx,
           y: minimumY
         };
 
-        console.log('position to use:', position);
-
         colYs[shortestColumnIdx] += height;
-
-        console.log('new columns heights', colYs);
 
         data = {
           left : position.x,
@@ -211,8 +199,7 @@
 
       _setViewportSize = function() {
         var w = columnWidth();
-        columnsCount = Math.floor(containerWidth / w);
-        console.log('columns count', columnsCount);
+        columnsCount = Math.floor(containerWidth / w + 0.01);
 
         colYs = [];
 
