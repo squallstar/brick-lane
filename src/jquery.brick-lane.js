@@ -21,12 +21,12 @@
         var elem = this[i];
         var instance = $.data( elem, namespace );
         if ( !instance ) {
-          logError( "Cannot call " + namespace + " prior to Brick Lane initialization; " +
+          console.debug( "Cannot call " + namespace + " prior to Brick Lane initialization; " +
             "options: '" + options + "'" );
           continue;
         }
         if ( !$.isFunction( instance[options] ) || options.charAt(0) === '_' ) {
-          logError( "Method '" + options + "' doesn't exist for " + namespace );
+          console.debug( "Method '" + options + "' doesn't exist for " + namespace );
           continue;
         }
 
