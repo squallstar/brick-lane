@@ -57,9 +57,41 @@ $('.mycontainer').brickLane({
 
 ---
 
+### ``itemSelector``
+
+By default, **Brick Lane** will use the ``first level children`` as initial items to be added to the instance. You can amend the behaviour by passing a **jQuery selector** as ``itemSelector`` option:
+	
+```javascript
+$('.mycontainer').brickLane({
+    itemSelector: 'article'
+});
+```
+
+---
+
+### ``isResizeBound``
+
+Binds layout to window resizing (defaults to true)
+	
+```javascript
+$('.mycontainer').brickLane({
+    isResizeBound: false
+});
+```
+
+---
+
 ## Methods
 
-### ``append``
+You can access the instance anytime by calling it like:
+
+```javascript
+$('.mycontainer').brickLane();
+```
+
+Methods can be called by passing the method name as first argument, following parameters after that. Please check the methods here below.
+
+### append (element)
 
 Appends and lay outs the given element to the instance.
 
@@ -69,9 +101,11 @@ var newEl = $('.some-article');
 $('.mycontainer').brickLane('append', newEl);
 ```
 
-### ``appended``
+---
 
-If you have your own way to add elements to the DOM, you can just tell the plugin to lay out the item by using the ``appended`` method instead.
+### appended (element)
+
+If you have your own way (perhaps a framework) to add elements to the DOM, you can just tell the plugin to lay out the item by using the ``appended`` method instead.
 
 ```javascript
 var newEl = $('.some-article');
@@ -79,4 +113,24 @@ var newEl = $('.some-article');
 $('.mycontainer').append(newEl);
 
 $('.mycontainer').brickLane('appended', newEl);
+```
+
+---
+
+### layout
+
+Force the layout of all elements.
+
+```javascript
+$('.mycontainer').brickLane('layout');
+```
+
+---
+
+### destroy
+
+Destroys the instance and reposition all items like they were before.
+
+```javascript
+$('.mycontainer').brickLane('destroy');
 ```
