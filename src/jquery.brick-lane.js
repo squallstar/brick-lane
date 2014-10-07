@@ -1,5 +1,5 @@
 /*!
- * Brick Lane v0.0.4
+ * Brick Lane v0.0.5
  * Hipstery Cascading Grid Layout Library
  * MIT License
  * by Nicholas Valbusa
@@ -95,7 +95,8 @@
 
         // Sets the container position to allow absolute positioning of elements inside
         $el.css('overflow', 'hidden');
-        if ($el.css('position') == 'static') {
+        var pos = $el.css('position');
+        if (pos !== 'relative' || pos !== 'absolute') {
           $el.css('position', 'relative');
         }
 
@@ -207,7 +208,7 @@
 
         // Appear transition (when needed)
         if ( needsToBeAppended && settings.transitionDuration > 0 ) {
-          if ( settings.useCSS3Transitions) {
+          if ( settings.useCSS3Transitions ) {
             $element.css( {opacity: 1} );
           } else {
             $element.animate( {opacity: 1}, settings.transitionDuration );
