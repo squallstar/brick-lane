@@ -1,5 +1,5 @@
 /*!
- * Brick Lane v0.0.5
+ * Brick Lane v1.0.0
  * Hipstery Cascading Grid Layout Library
  * MIT License
  * by Nicholas Valbusa
