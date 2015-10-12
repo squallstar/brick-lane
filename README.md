@@ -134,3 +134,13 @@ Destroys the instance and reposition all items like they were before.
 ```javascript
 $('.mycontainer').brickLane('destroy');
 ```
+
+---
+
+##License
+
+```
+"THE BEER-WARE LICENSE" (Revision 42):
+You can do whatever you want with this stuff.
+If we meet some day, and you think this stuff is worth it, you can buy me a beer in return.
+```
